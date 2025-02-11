@@ -2,7 +2,7 @@
 ## Teaching & Learning Center, GC CUNY
 
 AI Policy Planning Guide is an interactive web-based resource designed to help instructors navigate AI policy decisions in their courses. The project offers structured walkthroughs, reflective decision-making guides, and a pre-semester checklist to support thoughtful engagement with generative AI in academic settings.
-[https://zmuhls.github.io/ai-planning-guide](https://zmuhls.github.io/ai-planning-guide)
+* [https://zmuhls.github.io/ai-planning-guide](https://zmuhls.github.io/ai-planning-guide)
 
 Features
 
