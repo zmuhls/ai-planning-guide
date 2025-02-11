@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GC TLC | AI Planning Guide</title>
+  <style>
+    /* reset and base styling */
+    * {
+      margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    }
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    color: #333;
+    line-height: 1.25;
+    padding: 20px;
+    }
+    .container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color:  #f2f2f2;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    }
+    header {
+    background-color: #005a9c;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    }
+    header h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    font-variant-caps: normal;
+    }
+    header p {
+    font-size: 0.85rem;
+    }
+    main {
+    padding: 20px;
+    }
+    #module-header {
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 10px;
+    background-color: #f7f7f7;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    text-align: center;
+    }
+    #story-text {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    min-height: 80px;
+    }
+    #choices {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+    }
+    #choices button {
+    padding: 8px 12px;
+    font-size: 1rem;
+    background-color: #005a9c;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-align: center;
+    line-height: 1.2;
+    }
+    #choices button:hover {
+    background-color: #003f73;
+    }
+    #controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    }
+    #controls button {
+    padding: 6px 12px;
+    font-size: 1rem;
+    background-color: #8c8c8c;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    }
+    #controls button:hover:not(:disabled) {
+    background-color: #6e6e6e;
+    }
+    #controls button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    }
+    footer {
+    background-color: #f7f7f7;
+    border-top: 1px solid #ddd;
+    padding: 15px;
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1.5;
+    }
+    footer a {
+    color: #005a9c;
+    text-decoration: none;
+    }
+    footer a:hover {
+    text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Planning Checklist</h1>
+      <p>For instructors to explore and reinforce their AI policies and planning strategies</p>
+    </header>
+    <main id="game-container">
+      <div id="game-selection"></div>
+      <div id="module-header"></div>
+      <div id="story-text"></div>
+      <div id="choices"></div>
+      <div id="controls">
+        <button id="go-back-button" disabled>Go back</button>
+        <button id="reset-button">Restart</button>
+      </div>
+    </main>
+    <footer>
+        <br>
+        <p>Based on <a href="https://www.umass.edu/ctl/how-do-i-consider-options-generative-ai-course-policy">AI Course Policy Flowchart</a> via the CTL team at University of Massachusetts</p>
+        <p><a href="index.html">🏠 Home</a></p>
+        </div>
+    </footer>
+  </div>
+  <script>
+    const game2Data = {
+      start: {
+        text: "Have you included a clear statement about your generative AI policy in your syllabus? This statement should not only inform students about your expectations but also provide guidance on the ethical and effective use of AI as a learning tool.",
+        choices: [
+          { text: "Yes, I have a clear statement", next: "question2" },
+          { text: "No, I have not included a policy statement", next: "ai_statement_advice" },
+          { text: "Learn more about syllabus statements", next: "ai_statement_details" }
+        ]
+      },
+      ai_statement_advice: {
+        text: "Consider adding a dedicated AI syllabus statement. Such a statement can clarify expectations and empower students to engage with generative AI responsibly. This prepares them to navigate both academic and ethical challenges. Continue to question #2.",
+        choices: [
+          { text: "Continue", next: "question2" }
+        ]
+      },
+      ai_statement_details: {
+        text: "An effective AI syllabus statement outlines permissible uses, potential pitfalls, and available support resources. It sets the tone for a collaborative learning environment where students are encouraged to ask questions and seek clarification on AI usage.",
+        choices: [
+          { text: "Return to decision", next: "start" }
+        ]
+      },
+      question2: {
+        text: "Have you added AI guidelines to all assignment instructions? Clear guidelines help students understand how AI can be used as a tool without compromising academic integrity or learning objectives.",
+        choices: [
+          { text: "Yes, each assignment includes specific guidelines", next: "question3" },
+          { text: "No, guidelines are not explicitly included", next: "ai_guidelines_advice" },
+          { text: "Explore assignment guidelines", next: "assignment_guidelines_info" }
+        ]
+      },
+      ai_guidelines_advice: {
+        text: "Providing explicit AI guidelines within assignments can aid in preventing misuse and clarify expectations for responsible use. This is crucial in an era where AI tools are ubiquitous. Continue to question #3.",
+        choices: [
+          { text: "Continue", next: "question3" }
+        ]
+      },
+      assignment_guidelines_info: {
+        text: "Detailed assignment guidelines should address issues like AI attribution, originality, and iterative design. They also offer pedagogical support by demonstrating how students can integrate AI tools to enhance learning while maintaining academic standards.",
+        choices: [
+          { text: "Return to decision", next: "question2" }
+        ]
+      },
+      question3: {
+        text: "Have you scheduled time during class to discuss your AI policies and expectations? In-class discussions can help students voice concerns and ask clarifying questions, fostering a better understanding of both the academic and ethical implications of generative AI use.",
+        choices: [
+          { text: "Yes, I regularly discuss expectations", next: "question4" },
+          { text: "No, these discussions are not planned", next: "ai_discussion_advice" }
+        ]
+      },
+      ai_discussion_advice: {
+        text: "Regular class discussions about AI policy can enhance student preparedness and promote a dynamic learning environment. These sessions allow you to address concerns, share best practices, and integrate real-world examples. Continue to question #4.",
+        choices: [
+          { text: "Continue", next: "question4" }
+        ]
+      },
+      question4: {
+        text: "Have you tested your assignment prompts using a enerative AI tool to anticipate possible outputs and challenges? This step is critical for designing assignments that are robust yet flexible, ensuring students are evaluated fairly.",
+        choices: [
+          { text: "Yes, I have tested my prompts", next: "question5" },
+          { text: "No, I haven't tested my prompts", next: "ai_testing_advice" },
+          { text: "Review prompt testing strategies", next: "ai_testing_details" }
+        ]
+      },
+      ai_testing_advice: {
+        text: "Testing your prompts can reveal unexpected AI responses and allow you to adjust assignment criteria accordingly. This not only safeguards academic integrity but also prepares students for evolving technological challenges. Continue to question #5.",
+        choices: [
+          { text: "Continue", next: "question5" }
+        ]
+      },
+      ai_testing_details: {
+        text: "By using AI tools to test your prompts, you can gain insights into potential responses and flaws in the designed tasks. Such insights support continuous improvement in assignment design and guide students on effective AI utilization.",
+        choices: [
+          { text: "Return to decision", next: "question4" }
+        ]
+      },
+      question5: {
+        text: "Does the AI-generated output suggest that your assignments are designed to be challenging for AI to complete fully, ensuring a high level of student engagement and critical thinking?",
+        choices: [
+          { text: "Yes, my assignments are robust against AI automation", next: "question8" },
+          { text: "No, some assignments may need redesigning", next: "question6" }
+        ]
+      },
+      question6: {
+        text: "Do you have ideas on how to redesign your assignments or create new ones that effectively leverage AI as a tool for learning, while still enforcing academic rigor?",
+        choices: [
+          { text: "Yes, I am exploring new designs", next: "question7" },
+          { text: "No, I need more guidance", next: "redesign_advice" }
+        ]
+      },
+      redesign_advice: {
+        text: "Review available resources and collaborate with peers to develop assignments that integrate AI thoughtfully. Consider addressing not only content mastery but also digital literacy and ethical considerations. Continue to question #7.",
+        choices: [
+          { text: "Continue", next: "question7" }
+        ]
+      },
+      question7: {
+        text: "Does your new assignment design consider the diverse needs of learners—including those with varying levels of digital literacy—and address equity issues related to AI access and use?",
+        choices: [
+          { text: "Yes, I have accommodated these factors", next: "question8" },
+          { text: "I'm not sure; I need further review", next: "diverse_learning_advice" }
+        ]
+      },
+      diverse_learning_advice: {
+        text: "Ensuring that assignments are accessible and equitable is essential in a digital age. Reflect on support structures and differentiated instruction to assist all students in effectively navigating AI tools. Continue to question #8.",
+        choices: [
+          { text: "Continue", next: "question8" }
+        ]
+      },
+      question8: {
+        text: "Do you have a clear plan for addressing suspected misuse of your AI policy, including strategies to detect and manage academic dishonesty?",
+        choices: [
+          { text: "Yes, I have a clear response plan", next: "question9" },
+          { text: "No, I need to develop a comprehensive plan", next: "policy_misuse_advice" },
+          { text: "Discuss policy response strategies", next: "policy_response_info" }
+        ]
+      },
+      policy_misuse_advice: {
+        text: "A robust response plan is vital for ensuring fairness and consistency. Develop protocols that include preventative measures, avenues for student appeal, and reflective practices for policy review. Continue to question #9.",
+        choices: [
+          { text: "Continue", next: "question9" }
+        ]
+      },
+      policy_response_info: {
+        text: "A strong policy response should outline clear protocols, support mechanisms, and a fair process for addressing potential misuse. This approach not only maintains academic integrity but also builds trust between students and educators.",
+        choices: [
+          { text: "Return to decision", next: "question8" }
+        ]
+      },
+      question9: {
+        text: "Are you familiar with your institution’s academic honesty policy, and have you integrated its key points into your generative AI teaching framework?",
+        choices: [
+          { text: "Yes, I adhere to its guidelines", next: "final_considerations" },
+          { text: "No, I need to review it further", next: "honesty_flowchart_advice" }
+        ]
+      },
+      honesty_flowchart_advice: {
+        text: "Reviewing and understanding your institution’s academic honesty policy is crucial. Integrate relevant elements into your AI teaching framework to ensure both clear expectations and a structured approach to handling potential violations. Continue to final considerations.",
+        choices: [
+          { text: "Continue", next: "final_considerations" }
+        ]
+      },
+      final_considerations: {
+        text: "Reflect on how your AI policy aligns with your broader pedagogical objectives and learning outcomes. Consider creating opportunities for ongoing dialogue and training to help students become adept and responsible users of AI technology in their academic journey.",
+        choices: []
+      }
+    }
+
+    let currentGameData = null
+    let historyStack = []
+
+    const storyContainer = document.getElementById("story-text")
+    const choicesContainer = document.getElementById("choices")
+    const gameSelection = document.getElementById("game-selection")
+    const moduleHeader = document.getElementById("module-header")
+    const goBackButton = document.getElementById("go-back-button")
+    const resetButton = document.getElementById("reset-button")
+
+    function renderStory(key, pushToHistory = true) {
+      const story = currentGameData[key]
+      if (!story) return
+      if (pushToHistory) {
+      if (historyStack.length === 0 || historyStack[historyStack.length - 1] !== key) {
+        historyStack.push(key)
+      }
+      }
+      storyContainer.innerHTML = `<p>${story.text}</p>`
+      choicesContainer.innerHTML = ""
+      story.choices.forEach(choice => {
+      const btn = document.createElement("button")
+      btn.textContent = choice.text
+      btn.onclick = () => {
+        renderStory(choice.next)
+      }
+      choicesContainer.appendChild(btn)
+      })
+      // Always add a restart button so it works at every stage
+      const restartBtn = document.createElement("button")
+      restartBtn.textContent = "Restart Game"
+      restartBtn.onclick = resetGame
+      choicesContainer.appendChild(restartBtn)
+      
+      updateControls()
+    }
+
+    function updateControls() {
+      goBackButton.disabled = historyStack.length <= 1
+    }
+
+    function resetGame() {
+      historyStack = []
+      currentGameData = null
+      gameSelection.style.display = "none"
+      moduleHeader.textContent = ""
+      storyContainer.innerHTML = ""
+      choicesContainer.innerHTML = ""
+      updateControls()
+      startGame2()
+    }
+
+    function startGame2() {
+      currentGameData = game2Data
+      historyStack = []
+      gameSelection.style.display = "none"
+    moduleHeader.textContent = "Pre-Semester Checklist";
+      renderStory("start")
+    }
+
+    goBackButton.onclick = () => {
+      if (historyStack.length > 1) {
+        historyStack.pop()
+        const previousKey = historyStack[historyStack.length - 1]
+        renderStory(previousKey, false)
+      }
+    }
+
+    resetButton.onclick = resetGame
+
+    // start game2 automatically
+    startGame2()
+  </script>
+</body>
+</html>

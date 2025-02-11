@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GC TLC | AI Planning Guide</title>
+    <style>
+        /* reset and base styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            color: #333;
+            line-height: 1.25;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color:  #f2f2f2;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        header {
+            background-color: #005a9c;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-variant-caps: normal;
+        }
+        header p {
+            font-size: .85rem;
+        }
+        main {
+            padding: 20px;
+        }
+        ul {
+            margin-left: 4em;
+        }
+        #module-header {
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 10px;
+            background-color: #f7f7f7;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #story-text {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            min-height: 80px;
+        }
+        #choices {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        #choices button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            background-color: #005a9c;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-align: left;
+        }
+        #choices button:hover {
+            background-color: #003f73;
+        }
+        #controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        #controls button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #8c8c8c;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        #controls button:hover:not(:disabled) {
+            background-color: #6e6e6e;
+        }
+        #controls button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        footer {
+            background-color: #f7f7f7;
+            border-top: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        footer a {
+            color: #005a9c;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Selection Guide</h1>
+            <p>For instructors to explore and craft AI policies and planning strategies</p>
+        </header>
+        <main id="game-container">
+            <div id="game-selection"></div>
+            <div id="module-header"></div>
+            <div id="story-text"></div>
+            <div id="choices"></div>
+            <div id="controls">
+                <button id="go-back-button" disabled>Go Back</button>
+                <button id="reset-button">Reset</button><br>
+            </div>
+        </main>
+        <footer>
+            <p>Based on the “AI Assessment Scale” proposed by Perkins, Furze, Roe & MacVaugh (2024).</p>    
+            <br>
+            <h3><a href="index.html">🏠 Home</a></h3>    
+        </footer>
+    </div>
+    <script>
+        const game1Data = {
+            start: {
+                text: "Responding to the growing adoption of generative AI tools, your students ask if they can use AI tools in their next assignment. How do you frame your critical and ethical principles while fostering creative inquiry?",
+                choices: [
+                    { text: "Prohibit AI tools completely", next: "no_ai" },
+                    { text: "Allow AI for ideation, brainstorming, and planning stages", next: "ai_planning" },
+                    { text: "Permit AI for collaboration, teamwork, and feedback", next: "ai_collaboration" },
+                    { text: "Encourage task-based learning with AI tools", next: "full_ai" },
+                    { text: "Explore AI applications critically and creatively", next: "ai_exploration" },
+                    { text: "Learn more about AI integration", next: "ai_integration_info" }
+                ]
+            },
+            no_ai: {
+                text: "You decide to prohibit AI tools as a measure to preserve conventional academic practices. Do you believe this approach is equitable and enforceable?",
+                choices: [
+                    { text: "Yes, I believe AI has no place in this context", next: "no_ai_reflection" },
+                    { text: "No, I might allow AI in limited scenarios", next: "ai_planning" },
+                    { text: "Explore the implications for student equity", next: "policy_implications_info" }
+                ]
+            },
+            no_ai_reflection: {
+                text: "While a strict prohibition may seem to secure academic standards, it risks limiting students’ engagement with emerging technologies and the opportunity to critically analyze digital tools. Consider whether incorporating controlled, scaffolded use might better prepare students for real‑world challenges. What adjustments could offer a more balanced approach?",
+                choices: [
+                    { text: "Reconsider and allow AI in structured ways", next: "ai_planning" },
+                    { text: "Maintain prohibition but schedule periodic reviews to revisit the policy", next: "end_game1_refined" }
+                ]
+            },
+            ai_planning: {
+                text: "You allow AI for ideation and planning, recognizing its potential to stimulate creative problem solving. How will you assess the value of AI during these initial stages?",
+                choices: [
+                    { text: "Evaluate the refinement of AI‑generated ideas", next: "critical_collaboration" },
+                    { text: "Limit AI use to predefined stages", next: "ai_planning_reflection" },
+                    { text: "Integrate iterative feedback loops", next: "iterative_feedback" },
+                    { text: "Explore planning strategies", next: "planning_strategies_info" }
+                ]
+            },
+            ai_planning_reflection: {
+                text: "Limiting AI strictly to predefined stages offers structure but may inadvertently stifle spontaneous creativity and adaptive learning. Reflect on whether a more flexible framework—with checkpoints that allow for organic evolution—could foster richer outcomes without sacrificing academic rigor.",
+                choices: [
+                    { text: "Adopt a hybrid approach with flexible checkpoints", next: "critical_collaboration" },
+                    { text: "Reaffirm the need for strict stages", next: "end_game1_refined" }
+                ]
+            },
+            iterative_feedback: {
+                text: "You implement iterative feedback loops where students refine AI‑generated ideas through cycles of peer review and instructor guidance. Which approach best supports reflective practice?",
+                choices: [
+                    { text: "Set fixed checkpoints for review", next: "critical_collaboration" },
+                    { text: "Facilitate open forums for discussion", next: "critical_collaboration" },
+                    { text: "Blend structured and open feedback methods", next: "critical_collaboration" }
+                ]
+            },
+            ai_collaboration: {
+                text: "You permit AI collaboration for drafting and refinement, emphasizing shared inquiry and mutual critique. How do you ensure that the collaborative process remains aligned with your learning objectives?",
+                choices: [
+                    { text: "Focus on critical engagement with AI outputs", next: "critical_collaboration" },
+                    { text: "Emphasize the final product over the process", next: "ai_collaboration_reflection" },
+                    { text: "Explore collaborative frameworks that incorporate peer review", next: "collaboration_framework_details" }
+                ]
+            },
+            ai_collaboration_reflection: {
+                text: "Prioritizing only the final product risks overlooking the learning that occurs during the process of collaboration. Consider integrating process‑based assessments—such as reflective discussions or draft reviews—to capture the depth of student learning. How might you merge these perspectives?",
+                choices: [
+                    { text: "Integrate process‑based assessment criteria", next: "critical_collaboration" },
+                    { text: "Maintain a focus on outcomes while adding reflective sessions", next: "critical_collaboration" }
+                ]
+            },
+            full_ai: {
+                text: "You allow extensive AI use throughout the assignment. How do you balance open exploration with structured evaluation?",
+                choices: [
+                    { text: "Assess students' strategic deployment of AI tools", next: "critical_collaboration" },
+                    { text: "Grant freedom without strict evaluation", next: "full_ai_reflection" },
+                    { text: "Examine integration challenges and set reflective checkpoints", next: "integration_challenges_info" }
+                ]
+            },
+            full_ai_reflection: {
+                text: "Granting unrestricted freedom can encourage experimentation but may result in inconsistent outcomes and missed learning milestones. Consider embedding periodic reflective checkpoints or peer reviews to ensure that creative exploration remains aligned with your academic goals. What balanced approach could you adopt?",
+                choices: [
+                    { text: "Implement periodic evaluations while preserving creative freedom", next: "critical_collaboration" },
+                    { text: "Proceed with open exploration but schedule a post‑assignment review", next: "end_game1_refined" }
+                ]
+            },
+            ai_exploration: {
+                text: "You co‑design assessments to explore innovative AI applications, inviting students to interrogate the role of technology in learning. How do you guide this process?",
+                choices: [
+                    { text: "Set clear guidelines while fostering creative inquiry", next: "critical_collaboration" },
+                    { text: "Allow students to lead without constraints", next: "ai_exploration_reflection" },
+                    { text: "Consult case studies on creative AI exploration", next: "creative_exploration_info" }
+                ]
+            },
+            ai_exploration_reflection: {
+                text: "Allowing complete freedom in exploration might spur bold innovation, yet it risks bypassing structured learning outcomes and critical reflection. Consider establishing flexible guidelines that support autonomy while ensuring accountability. What measures might achieve this balance?",
+                choices: [
+                    { text: "Integrate guided inquiry with student‑led projects", next: "critical_collaboration" },
+                    { text: "Permit free exploration but schedule regular reflective check‑ins", next: "end_game1_refined" }
+                ]
+            },
+            ai_integration_info: {
+                text: "Integrating AI in the classroom calls for balancing innovation with academic responsibility. Consider the benefits of enhanced ideation alongside the challenges of upholding rigorous standards. How might AI transform your pedagogical approach?",
+                choices: [
+                    { text: "Return to decision", next: "start" }
+                ]
+            },
+            policy_implications_info: {
+                text: "Prohibiting AI may simplify assessment protocols but risks curtailing opportunities for engagement with emerging technologies. Reflect on issues of fairness and practical enforceability as you refine your policy.",
+                choices: [
+                    { text: "Return to decision", next: "no_ai" }
+                ]
+            },
+            planning_strategies_info: {
+                text: "Effective planning with AI benefits from iterative review and reflective practice. Consider methods that combine human insight with AI‑generated ideas to create balanced, innovative outcomes.",
+                choices: [
+                    { text: "Return to decision", next: "ai_planning" }
+                ]
+            },
+            collaboration_framework_details: {
+                text: "Collaborative frameworks invite dialogue and peer review, enriching the learning process. Think about how integrating AI in group projects can foster critical analysis and shared responsibility.",
+                choices: [
+                    { text: "Return to decision", next: "ai_collaboration" }
+                ]
+            },
+            integration_challenges_info: {
+                text: "Extensive AI use presents challenges in maintaining academic standards. Consider implementing regular checkpoints and reflective assessments to monitor student progress and ensure that learning objectives are met.",
+                choices: [
+                    { text: "Return to decision", next: "full_ai" }
+                ]
+            },
+            creative_exploration_info: {
+                text: "Creative exploration with AI opens new avenues for inquiry but requires clear guidelines to prevent misuse. Evaluate potential risks and rewards as you consider innovative approaches.",
+                choices: [
+                    { text: "Return to decision", next: "ai_exploration" }
+                ]
+            },
+            critical_collaboration: {
+                text: "Your approach aligns with a framework that values AI as a tool for collaborative inquiry, encouraging critical engagement and reflective practice. How will you document and assess the learning journey?",
+                choices: [
+                    { text: "Complete module and review outcomes", next: "assessment_reflection" },
+                    { text: "Explore additional reflection strategies", next: "assessment_reflection" }
+                ]
+            },
+            assessment_reflection: {
+                text: "You opt to incorporate a reflective assessment phase, inviting students to articulate their learning process and evaluate the impact of AI on their work. Consider methods such as reflective essays or peer feedback sessions to capture the full spectrum of their experience. How might this reflection inform future iterations of your assignment design?",
+                choices: [
+                    { text: "Finalize module with insights for improvement", next: "end_game1_refined" },
+                    { text: "Return to collaboration review", next: "critical_collaboration" }
+                ]
+            },
+            end_game1_refined: {
+                text: "You have navigated the complexities of AI policy and pedagogical integration with nuanced consideration. While your approach reflects one pathway, remember that ongoing reflection and adaptation remain key to effective teaching in a rapidly evolving digital landscape. Click below to transition to the planning checklist module and consider revisiting these ideas as your practice evolves.",
+                choices: [
+                    { text: "Go to Checklist", next: "checklist" },
+                    { text: "Return Home", next: "home" }
+                ]
+            }
+        }
+
+        let currentGameData = null
+        let historyStack = []
+        let finalChoices = []
+
+        const storyContainer = document.getElementById("story-text")
+        const choicesContainer = document.getElementById("choices")
+        const gameSelection = document.getElementById("game-selection")
+        const moduleHeader = document.getElementById("module-header")
+        const goBackButton = document.getElementById("go-back-button")
+        const resetButton = document.getElementById("reset-button")
+
+        function renderStory(key, pushToHistory = true) {
+            const story = currentGameData[key]
+            if (!story) return
+            if (pushToHistory) {
+                if (historyStack.length === 0 || historyStack[historyStack.length - 1] !== key) {
+                    historyStack.push(key)
+                }
+            }
+            storyContainer.innerHTML = `<p>${story.text}</p>`
+            // If on the final screen, output a summary of the final choices.
+            if (key === "end_game1_refined") {
+                const summary = document.createElement("div")
+                summary.id = "final-summary"
+                summary.innerHTML =
+                    "<h3><br><hr><br>Your Final Choices:</h3><br><ul>" +
+                    finalChoices.map(choice => `<li>${choice}</li>`).join('') +
+                    "</ul>"
+                storyContainer.appendChild(summary)
+            }
+            choicesContainer.innerHTML = ""
+            story.choices.forEach(choice => {
+                const btn = document.createElement("button")
+                btn.textContent = choice.text
+                btn.onclick = () => {
+                    // Only record selections that are not navigation controls.
+                    if (choice.next !== "start_game2" && choice.next !== "checklist" && choice.next !== "home") {
+                        finalChoices.push(choice.text)
+                    }
+                    if (choice.next === "start_game2") {
+                        window.location.href = "game2.html"
+                    } else if (choice.next === "checklist") {
+                        window.location.href = "checklist.html"
+                    } else if (choice.next === "home") {
+                        window.location.href = "index.html"
+                    } else {
+                        renderStory(choice.next)
+                    }
+                }
+                choicesContainer.appendChild(btn)
+            })
+            if (story.choices.length === 0) {
+                const restartBtn = document.createElement("button")
+                restartBtn.textContent = "Restart Game"
+                restartBtn.onclick = resetGame
+                choicesContainer.appendChild(restartBtn)
+            }
+            updateControls()
+        }
+
+        function updateControls() {
+            goBackButton.disabled = historyStack.length <= 1
+        }
+
+        function resetGame() {
+            historyStack = []
+            finalChoices = []
+            currentGameData = null
+            gameSelection.style.display = "none"
+            moduleHeader.textContent = ""
+            storyContainer.innerHTML = ""
+            choicesContainer.innerHTML = ""
+            updateControls()
+            startGame1()
+        }
+
+        function startGame1() {
+            currentGameData = game1Data
+            historyStack = []
+            finalChoices = []
+            gameSelection.style.display = "none"
+            moduleHeader.textContent = "AI Policy Selection Guide"
+            renderStory("start")
+        }
+
+        goBackButton.onclick = () => {
+            if (historyStack.length > 1) {
+                historyStack.pop()
+                finalChoices.pop()
+                const previousKey = historyStack[historyStack.length - 1]
+                renderStory(previousKey, false)
+            }
+        }
+
+        resetButton.onclick = resetGame
+
+        // start game1 automatically
+        startGame1()
+    </script>
+</body>
+</html>
